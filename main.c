@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
+#include <errno.h>
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
@@ -20,6 +21,7 @@ int main(int argc, char **argv) {
 	time_t rawtime;
 	struct tm *info;
 	char *end = NULL;
+	errno = 0;
 	xmlDocPtr doc = NULL;
 	xmlNodePtr root_node = NULL, products = NULL, node = NULL;
 
@@ -32,9 +34,15 @@ int main(int argc, char **argv) {
 	xmlNewChild(root_node, NULL, BAD_CAST "purchase-timestamp", BAD_CAST "2014-10-10 12:12:12+00:00");//strftime(buffer, 80, "%x %X", info));//
 	products = xmlNewChild(root_node, NULL, BAD_CAST "products", NULL);
 	
-	//j = atoi(user_input(buffer, "number of products"));
 	j = strtoul(user_input(buffer, "number of products"), &end, 10);
-	
+	if (errno != 0) {
+		fprintf(stderr, "Conversion error, %s\n", strerror(errno));
+		exit (EXIT_FAILURE); 
+	} else if (*end) {
+		printf("Warning: converted partially: %i, non-convertible part: %s\n", j, end);
+	}
+
+
 	for(i = 1; i <= j; i++) {
 		node = xmlNewChild(products, NULL, BAD_CAST "product", NULL);
 			
