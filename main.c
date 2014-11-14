@@ -5,9 +5,9 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
-char *get_timestamp() {
+struct tm *get_timestamp() {
 	time_t now = time (NULL);
-	return asctime (localtime (&now));
+	return localtime(&now);
 }
 
 char *user_input(char *buffer, char *node_name) {
@@ -32,9 +32,10 @@ int main(int argc, char **argv) {
 	root_node = xmlNewNode(NULL, BAD_CAST "basket");
 	xmlDocSetRootElement(doc, root_node);
 
-	printf("%s\n", get_timestamp());
+	strftime(buffer, sizeof buffer, "%F %T%z" , get_timestamp());
+	printf("%s\n", buffer);
 
-	xmlNewChild(root_node, NULL, BAD_CAST "purchase-timestamp", BAD_CAST strftime());
+	xmlNewChild(root_node, NULL, BAD_CAST "purchase-timestamp", BAD_CAST buffer);
 	products = xmlNewChild(root_node, NULL, BAD_CAST "products", NULL);
 	
 	j = strtoul(user_input(buffer, "number of products"), &end, 10);
