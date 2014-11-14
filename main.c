@@ -5,6 +5,11 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
+char *get_timestamp() {
+	time_t now = time (NULL);
+	return asctime (localtime (&now));
+}
+
 char *user_input(char *buffer, char *node_name) {
 	printf("Enter the %s:\n", node_name);
 	if (fgets(buffer, 256, stdin) == NULL) {
@@ -18,8 +23,6 @@ char *user_input(char *buffer, char *node_name) {
 int main(int argc, char **argv) {
 	int i, j;
 	char buffer[256];
-	time_t rawtime;
-	struct tm *info;
 	char *end = NULL;
 	errno = 0;
 	xmlDocPtr doc = NULL;
@@ -29,9 +32,9 @@ int main(int argc, char **argv) {
 	root_node = xmlNewNode(NULL, BAD_CAST "basket");
 	xmlDocSetRootElement(doc, root_node);
 
-	info = localtime(&rawtime);
+	printf("%s\n", get_timestamp());
 
-	xmlNewChild(root_node, NULL, BAD_CAST "purchase-timestamp", BAD_CAST "2014-10-10 12:12:12+00:00");//strftime(buffer, 80, "%x %X", info));//
+	xmlNewChild(root_node, NULL, BAD_CAST "purchase-timestamp", BAD_CAST strftime());
 	products = xmlNewChild(root_node, NULL, BAD_CAST "products", NULL);
 	
 	j = strtoul(user_input(buffer, "number of products"), &end, 10);
@@ -41,7 +44,6 @@ int main(int argc, char **argv) {
 	} else if (*end) {
 		printf("Warning: converted partially: %i, non-convertible part: %s\n", j, end);
 	}
-
 
 	for(i = 1; i <= j; i++) {
 		node = xmlNewChild(products, NULL, BAD_CAST "product", NULL);
