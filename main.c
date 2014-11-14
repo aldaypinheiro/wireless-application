@@ -20,11 +20,26 @@ char *user_input(char *buffer, char *node_name) {
 	return buffer;
 }
 
+int parse_int(char *buffer) {
+	int r = 0;
+	char *end = NULL;
+	errno = 0;
+
+	r = strtoul(buffer, &end, 10);
+
+	if (errno != 0) {
+		fprintf(stderr, "Conversion error, %s\n", strerror(errno));
+		exit (EXIT_FAILURE); 
+	} else if (*end) {
+		printf("Warning: converted partially: %i, non-convertible part: %s\n", r, end);
+	}
+
+	return r;
+}
+
 int main(int argc, char **argv) {
 	int i, j;
 	char buffer[256];
-	char *end = NULL;
-	errno = 0;
 	xmlDocPtr doc = NULL;
 	xmlNodePtr root_node = NULL, products = NULL, node = NULL;
 
@@ -32,19 +47,12 @@ int main(int argc, char **argv) {
 	root_node = xmlNewNode(NULL, BAD_CAST "basket");
 	xmlDocSetRootElement(doc, root_node);
 
-	strftime(buffer, sizeof buffer, "%F %T%z" , get_timestamp());
-	printf("%s\n", buffer);
+	strftime(buffer, sizeof buffer, "%F %T%z", get_timestamp());
 
 	xmlNewChild(root_node, NULL, BAD_CAST "purchase-timestamp", BAD_CAST buffer);
 	products = xmlNewChild(root_node, NULL, BAD_CAST "products", NULL);
 	
-	j = strtoul(user_input(buffer, "number of products"), &end, 10);
-	if (errno != 0) {
-		fprintf(stderr, "Conversion error, %s\n", strerror(errno));
-		exit (EXIT_FAILURE); 
-	} else if (*end) {
-		printf("Warning: converted partially: %i, non-convertible part: %s\n", j, end);
-	}
+	j = parse_int(user_input(buffer, "number of products"));
 
 	for(i = 1; i <= j; i++) {
 		node = xmlNewChild(products, NULL, BAD_CAST "product", NULL);
