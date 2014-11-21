@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <basket>
-  <purchase-timestamp>2014-11-16 13:42:55+0000</purchase-timestamp>
+  <purchase-timestamp>2014-11-</purchase-timestamp>
   <products>
     <product>
-      <id>
-</id>
+      <id>1</id>
       <name>a</name>
-      <department>a</department>
-      <price>a</price>
-      <weight>a</weight>
-      <fragile>a</fragile>
+      <department>b</department>
+      <price>c</price>
+      <weight>d</weight>
+      <fragile>e</fragile>
     </product>
   </products>
 </basket>

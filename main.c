@@ -5,9 +5,15 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
-struct tm *get_timestamp() {
+struct tm *get_time() {
 	time_t now = time (NULL);
 	return localtime(&now);
+}
+
+char *get_timestamp(char *buffer) {
+	strftime(buffer, sizeof buffer, "%F %T%z", get_time());
+
+	return buffer;
 }
 
 char *user_input(char *buffer, char *node_name) {
@@ -37,28 +43,34 @@ int parse_int(char *buffer) {
 	return r;
 }
 
-int main(int argc, char **argv) {
-	int i, j;
-	char buffer[256];
-	xmlDocPtr doc = NULL;
-	xmlNodePtr root_node = NULL, products = NULL, node = NULL;
+char *parse_char(char *buffer, int value) {
+	sprintf(buffer, "%d", value);
 
-	doc = xmlNewDoc(BAD_CAST "1.0");
+	return buffer;
+}
+
+void add_xml_data(xmlDocPtr doc, char *buffer) {
+	int i, j, pid;
+		xmlNodePtr root_node = NULL, products = NULL, node = NULL;
+
 	root_node = xmlNewNode(NULL, BAD_CAST "basket");
+
 	xmlDocSetRootElement(doc, root_node);
 
-	strftime(buffer, sizeof buffer, "%F %T%z", get_timestamp());
-
-	xmlNewChild(root_node, NULL, BAD_CAST "purchase-timestamp", BAD_CAST buffer);
+	xmlNewChild(root_node, NULL, BAD_CAST "purchase-timestamp", BAD_CAST get_timestamp(buffer));
 	products = xmlNewChild(root_node, NULL, BAD_CAST "products", NULL);
 	
 	j = parse_int(user_input(buffer, "number of products"));
 
 	for(i = 1; i <= j; i++) {
 		node = xmlNewChild(products, NULL, BAD_CAST "product", NULL);
-			
-		xmlNewChild(node, NULL, BAD_CAST "id", BAD_CAST user_input(buffer, "product id"));
-		
+
+		user_input(buffer, "product id");
+		pid = parse_int(buffer);
+		buffer = parse_char(buffer, pid);
+
+		xmlNewChild(node, NULL, BAD_CAST "id", BAD_CAST buffer);
+	
 		xmlNewChild(node, NULL, BAD_CAST "name", BAD_CAST user_input(buffer, "product name"));
 		
 		xmlNewChild(node, NULL, BAD_CAST "department", BAD_CAST user_input(buffer, "product department"));
@@ -69,6 +81,16 @@ int main(int argc, char **argv) {
 		
 		xmlNewChild(node, NULL, BAD_CAST "fragile", BAD_CAST user_input(buffer, "fragile type (true or false)"));
 	}
+}
+
+int main(int argc, char **argv) {
+	char buffer[256];
+
+	xmlDocPtr doc = NULL;
+
+	doc = xmlNewDoc(BAD_CAST "1.0");
+	
+	add_xml_data(doc, buffer);
 
 	xmlSaveFormatFileEnc("-", doc, "UTF-8", 1); // prints on console
 	xmlSaveFormatFileEnc("product.xml", doc, "UTF-8", 1); //save file
