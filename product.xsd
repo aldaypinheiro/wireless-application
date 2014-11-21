@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:include schemaLocation="http://zedstar.org/xml/schema/packedobjectsDataTypes.xsd" />
+	<xs:complexType name="productsType">
+		<xs:element name="product" type="productType" maxOccurs="unbounded" />
+	</xs:complexType>
+	<xs:simpleType name="departmentType">
+		<xs:restriction base="enumerated">
+			<xs:enumeration value="Eletronics" />
+			<xs:enumeration value="Forniture" />
+			<xs:enumeration value="DIY" />
+			<xs:enumeration value="Kitchen" />
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="productType">
+		<xs:all>
+			<xs:element name="id">
+				<xs:simpleType>
+					<xs:restriction base="integer">
+						<xs:minInclusive value="0" />
+						<xs:maxInclusive value="999999" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="name">
+				<xs:simpleType>
+					<xs:restriction base="string">
+						<xs:minLength value="1" />
+						<xs:maxLength value="250" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="department" type="departmentType" />
+			<xs:element name="price" type="currency" />
+			<xs:element name="weight" type="decimal" />
+			<xs:element name="fragile" type="boolean" />
+		</xs:all>
+	</xs:complexType>
+	<xs:element name="basket">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="purchase-timestamp" type="unix-time" />
+				<xs:element name="products" type="productsType" maxOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

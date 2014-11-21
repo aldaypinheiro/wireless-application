@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <basket>
-  <purchase-timestamp>2014-11-14 11:00:33+0000</purchase-timestamp>
+  <purchase-timestamp>2014-11-16 13:42:55+0000</purchase-timestamp>
   <products>
     <product>
-      <id>a</id>
+      <id>
+</id>
       <name>a</name>
       <department>a</department>
       <price>a</price>
