@@ -5,10 +5,10 @@
     <product>
       <id>1</id>
       <name>a</name>
-      <department>b</department>
-      <price>c</price>
-      <weight>d</weight>
-      <fragile>e</fragile>
+      <department>a</department>
+      <price>a</price>
+      <weight>a</weight>
+      <fragile>a</fragile>
     </product>
   </products>
 </basket>

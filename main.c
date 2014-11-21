@@ -2,8 +2,9 @@
 #include <time.h>
 #include <string.h>
 #include <errno.h>
-#include <libxml/parser.h>
-#include <libxml/tree.h>
+#include <packedobjects/packedobjects.h>
+
+#define XML_SCHEMA "product.xsd"
 
 struct tm *get_time() {
 	time_t now = time (NULL);
@@ -12,7 +13,6 @@ struct tm *get_time() {
 
 char *get_timestamp(char *buffer) {
 	strftime(buffer, sizeof buffer, "%F %T%z", get_time());
-
 	return buffer;
 }
 
@@ -45,6 +45,11 @@ int parse_int(char *buffer) {
 
 char *parse_char(char *buffer, int value) {
 	sprintf(buffer, "%d", value);
+
+	if (errno != 0) {
+		fprintf(stderr, "Conversion error, %s\n", strerror(errno));
+		exit (EXIT_FAILURE); 
+	}
 
 	return buffer;
 }
@@ -83,14 +88,70 @@ void add_xml_data(xmlDocPtr doc, char *buffer) {
 	}
 }
 
+void initialise_packedobjects(packedobjectsContext *pc) {
+	// initialise packedobjects
+	if ((pc = init_packedobjects(XML_SCHEMA, 0, 0)) == NULL) {
+		printf("failed to initialise libpackedobjects");
+		exit(1);
+	}
+}
+
+void encoding_packedobjects(xmlDocPtr doc, packedobjectsContext *pc, char *pdu) {
+	////////////////////// Encoding //////////////////////
+
+	// encode the XML DOM
+	pdu = packedobjects_encode(pc, doc);
+	if (pc->bytes == -1) {
+		printf("Failed to encode with error %d.\n", pc->encode_error);
+	}
+
+	// free the DOM
+	xmlFreeDoc(doc);	
+}
+
+void decoding_packedobjects(xmlDocPtr doc, packedobjectsContext *pc, char *pdu) {
+	////////////////////// Decoding //////////////////////
+
+	// decode the PDU into DOM
+	doc = packedobjects_decode(pc, pdu);
+	if (pc->decode_error) {
+		printf("Failed to decode with error %d.\n", pc->decode_error);
+		exit(1);
+	}
+}
+
+void output_dom(xmlDocPtr doc) {
+	// output the DOM for checking
+	packedobjects_dump_doc(doc);
+}
+
+void encode_xml(xmlDocPtr doc) {
+	packedobjectsContext *pc = NULL;
+	char *pdu = NULL;
+
+	initialise_packedobjects(pc);
+	encoding_packedobjects(doc, pc, pdu);
+	output_dom(doc);
+}
+
+void decode_xml(xmlDocPtr doc) {
+	packedobjectsContext *pc = NULL;
+	char *pdu = NULL;
+
+	initialise_packedobjects(pc);
+	decoding_packedobjects(doc, pc, pdu);
+	output_dom(doc);
+}
+
 int main(int argc, char **argv) {
 	char buffer[256];
-
 	xmlDocPtr doc = NULL;
 
 	doc = xmlNewDoc(BAD_CAST "1.0");
 	
 	add_xml_data(doc, buffer);
+	encode_xml(doc);
+	decode_xml(doc);
 
 	xmlSaveFormatFileEnc("-", doc, "UTF-8", 1); // prints on console
 	xmlSaveFormatFileEnc("product.xml", doc, "UTF-8", 1); //save file
