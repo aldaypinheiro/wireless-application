@@ -1,4 +1,4 @@
-AC_INIT(basket , 0.1, 21250406@student.uwl.ac.uk)
+AC_INIT(basket , 0.1, foo@bar.com)
 AM_INIT_AUTOMAKE
 AC_CONFIG_SRCDIR([src/])
 AM_CONFIG_HEADER([src/config.h])

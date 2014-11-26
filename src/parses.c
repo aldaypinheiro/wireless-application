@@ -1,3 +1,8 @@
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <stdlib.h>
+
 int parse_int(char *buffer) {
 	int r = 0;
 	char *end = NULL;

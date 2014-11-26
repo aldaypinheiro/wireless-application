@@ -1,3 +1,8 @@
+#include <packedobjects/packedobjects.h>
+
+#define XML_SCHEMA "product.xsd"
+
+
 char *encode_xml(xmlDocPtr doc, packedobjectsContext *pc) {
 	char *encode = NULL;
 

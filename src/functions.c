@@ -1,3 +1,9 @@
+#include <time.h>
+#include <string.h>
+#include <packedobjects/packedobjects.h>
+
+#define MAX_CHARACTER 256
+
 struct tm *get_time() {
 	time_t now = time (NULL);
 	return localtime(&now);

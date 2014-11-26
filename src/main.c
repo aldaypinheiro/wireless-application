@@ -1,18 +1,17 @@
 #include <stdio.h>
-#include <time.h>
 #include <xlocale.h>
 #include <string.h>
 #include <errno.h>
 #include <packedobjects/packedobjects.h>
+
+#define XML_SCHEMA "product.xsd"
+#define MAX_CHARACTER 256
 
 #include "functions.h"
 #include "parses.h"
 #include "packedobj.h"
 
 #include "user.h"
-
-#define XML_SCHEMA "product.xsd"
-#define MAX_CHARACTER 256
 
 int main(int argc, char **argv) {
 	char buffer[MAX_CHARACTER];
