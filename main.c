@@ -13,9 +13,8 @@ struct tm *get_time() {
 	return localtime(&now);
 }
 
-char *get_timestamp(char buffer) {
+char *get_timestamp(char *buffer) {
 	strftime(buffer, MAX_CHARACTER, "%F %T%z", get_time());
-	printf("%s\n", buffer);	
 	return buffer;
 }
 
@@ -92,34 +91,35 @@ void add_xml_data(xmlDocPtr doc, char *buffer) {
 	}
 }
 
-int main(int argc, char **argv) {
-	char buffer[256];
-	xmlDocPtr doc = NULL;
-	packedobjectsContext *pc = NULL;
-	char *pdu = NULL;
-
-	// initialise packedobjects
-	if ((pc = init_packedobjects(XML_SCHEMA, 0, 0)) == NULL) {
-		printf("failed to initialise libpackedobjects");
-		exit(1);
-	}
-	
-	// create the data
-	doc = xmlNewDoc(BAD_CAST "1.0");
-	add_xml_data(doc, buffer);
-
-	xmlSaveFormatFileEnc("-", doc, "UTF-8", 1);
+char *encode_xml(xmlDocPtr doc, packedobjectsContext *pc) {
+	char *encode = NULL;
 
 	////////////////////// Encoding //////////////////////
 	// encode the XML DOM
-	pdu = packedobjects_encode(pc, doc);
+	encode = packedobjects_encode(pc, doc);
 	if (pc->bytes == -1) {
 		printf("Failed to encode with error %d.\n", pc->encode_error);
 	}
 
 	// free the DOM
 	xmlFreeDoc(doc);
-	
+
+	return encode;
+}
+
+void old_encode_xml(xmlDocPtr doc, packedobjectsContext *pc, char *pdu) {
+	////////////////////// Encoding //////////////////////
+	// encode the XML DOM
+	pdu = packedobjects_encode(pc, doc);// i need to change the real value of pdu
+	if (pc->bytes == -1) {
+		printf("Failed to encode with error %d.\n", pc->encode_error);
+	}
+
+	// free the DOM
+	xmlFreeDoc(doc);
+}
+
+void decode_xml(xmlDocPtr doc, packedobjectsContext *pc, char *pdu) {
 	////////////////////// Decoding //////////////////////
 	// decode the PDU into DOM
 	doc = packedobjects_decode(pc, pdu);
@@ -132,6 +132,36 @@ int main(int argc, char **argv) {
 	packedobjects_dump_doc(doc);
 
 	xmlFreeDoc(doc);
+}
+
+packedobjectsContext *initialize_po() {
+	packedobjectsContext *context = NULL;
+
+	// initialise packedobjects
+	if ((context = init_packedobjects(XML_SCHEMA, 0, 0)) == NULL) {
+		printf("failed to initialise libpackedobjects");
+		exit(1);
+	}
+
+	return context;
+}
+
+int main(int argc, char **argv) {
+	char buffer[MAX_CHARACTER];
+	xmlDocPtr doc = NULL;
+	packedobjectsContext *pc = initialize_po();
+	char *pdu = NULL;
+	
+	// create the data
+	doc = xmlNewDoc(BAD_CAST "1.0");
+
+	add_xml_data(doc, buffer);
+
+	xmlSaveFormatFileEnc("-", doc, "UTF-8", 1);
+
+	pdu = encode_xml(doc, pc); //it is not altering memory value
+	
+	decode_xml(doc, pc, pdu);
 
 	// free memory created by packedobjects
 	free_packedobjects(pc);
