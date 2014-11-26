@@ -31,7 +31,7 @@
 				<xs:simpleType>
 					<xs:restriction base="string">
 						<xs:minLength value="1" />
-						<xs:maxLength value="250" />
+						<xs:maxLength value="255" />
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
@@ -46,7 +46,7 @@
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="purchase-timestamp" type="unix-time" />
-				<xs:element name="products" type="productsType" maxOccurs="1" />
+				<xs:element name="products" type="productsType" />
 			</xs:sequence>
 		</xs:complexType>
 	</xs:element>

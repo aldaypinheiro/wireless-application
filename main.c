@@ -1,24 +1,27 @@
 #include <stdio.h>
 #include <time.h>
+#include <xlocale.h>
 #include <string.h>
 #include <errno.h>
 #include <packedobjects/packedobjects.h>
 
 #define XML_SCHEMA "product.xsd"
+#define MAX_CHARACTER 256
 
 struct tm *get_time() {
 	time_t now = time (NULL);
 	return localtime(&now);
 }
 
-char *get_timestamp(char *buffer) {
-	strftime(buffer, sizeof buffer, "%F %T%z", get_time());
+char *get_timestamp(char buffer) {
+	strftime(buffer, MAX_CHARACTER, "%F %T%z", get_time());
+	printf("%s\n", buffer);	
 	return buffer;
 }
 
 char *user_input(char *buffer, char *node_name) {
 	printf("Enter the %s:\n", node_name);
-	if (fgets(buffer, 256, stdin) == NULL) {
+	if (fgets(buffer, MAX_CHARACTER, stdin) == NULL) {
 		fprintf(stderr, "failed to read string\n");
 		return NULL;
 	}
@@ -56,13 +59,14 @@ char *parse_char(char *buffer, int value) {
 
 void add_xml_data(xmlDocPtr doc, char *buffer) {
 	int i, j, pid;
-		xmlNodePtr root_node = NULL, products = NULL, node = NULL;
+	xmlNodePtr root_node = NULL, products = NULL, node = NULL;
 
 	root_node = xmlNewNode(NULL, BAD_CAST "basket");
 
 	xmlDocSetRootElement(doc, root_node);
 
 	xmlNewChild(root_node, NULL, BAD_CAST "purchase-timestamp", BAD_CAST get_timestamp(buffer));
+
 	products = xmlNewChild(root_node, NULL, BAD_CAST "products", NULL);
 	
 	j = parse_int(user_input(buffer, "number of products"));
@@ -88,17 +92,25 @@ void add_xml_data(xmlDocPtr doc, char *buffer) {
 	}
 }
 
-void initialise_packedobjects(packedobjectsContext *pc) {
+int main(int argc, char **argv) {
+	char buffer[256];
+	xmlDocPtr doc = NULL;
+	packedobjectsContext *pc = NULL;
+	char *pdu = NULL;
+
 	// initialise packedobjects
 	if ((pc = init_packedobjects(XML_SCHEMA, 0, 0)) == NULL) {
 		printf("failed to initialise libpackedobjects");
 		exit(1);
 	}
-}
+	
+	// create the data
+	doc = xmlNewDoc(BAD_CAST "1.0");
+	add_xml_data(doc, buffer);
 
-void encoding_packedobjects(xmlDocPtr doc, packedobjectsContext *pc, char *pdu) {
+	xmlSaveFormatFileEnc("-", doc, "UTF-8", 1);
+
 	////////////////////// Encoding //////////////////////
-
 	// encode the XML DOM
 	pdu = packedobjects_encode(pc, doc);
 	if (pc->bytes == -1) {
@@ -106,56 +118,24 @@ void encoding_packedobjects(xmlDocPtr doc, packedobjectsContext *pc, char *pdu) 
 	}
 
 	// free the DOM
-	xmlFreeDoc(doc);	
-}
-
-void decoding_packedobjects(xmlDocPtr doc, packedobjectsContext *pc, char *pdu) {
+	xmlFreeDoc(doc);
+	
 	////////////////////// Decoding //////////////////////
-
 	// decode the PDU into DOM
 	doc = packedobjects_decode(pc, pdu);
 	if (pc->decode_error) {
 		printf("Failed to decode with error %d.\n", pc->decode_error);
 		exit(1);
 	}
-}
 
-void output_dom(xmlDocPtr doc) {
 	// output the DOM for checking
 	packedobjects_dump_doc(doc);
-}
 
-void encode_xml(xmlDocPtr doc) {
-	packedobjectsContext *pc = NULL;
-	char *pdu = NULL;
-
-	initialise_packedobjects(pc);
-	encoding_packedobjects(doc, pc, pdu);
-	output_dom(doc);
-}
-
-void decode_xml(xmlDocPtr doc) {
-	packedobjectsContext *pc = NULL;
-	char *pdu = NULL;
-
-	initialise_packedobjects(pc);
-	decoding_packedobjects(doc, pc, pdu);
-	output_dom(doc);
-}
-
-int main(int argc, char **argv) {
-	char buffer[256];
-	xmlDocPtr doc = NULL;
-
-	doc = xmlNewDoc(BAD_CAST "1.0");
-	
-	add_xml_data(doc, buffer);
-	encode_xml(doc);
-	decode_xml(doc);
-
-	xmlSaveFormatFileEnc("-", doc, "UTF-8", 1); // prints on console
-	xmlSaveFormatFileEnc("product.xml", doc, "UTF-8", 1); //save file
 	xmlFreeDoc(doc);
+
+	// free memory created by packedobjects
+	free_packedobjects(pc);
+
 	xmlCleanupParser();
 	return (0);
 }
