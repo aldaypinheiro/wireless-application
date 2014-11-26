@@ -1,0 +1,1 @@
+char *user_input(char *buffer, char *node_name);
