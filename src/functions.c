@@ -2,6 +2,9 @@
 #include <string.h>
 #include <packedobjects/packedobjects.h>
 
+#include "user.h"
+#include "parses.h"
+
 #define MAX_CHARACTER 256
 
 struct tm *get_time() {
@@ -16,6 +19,7 @@ char *get_timestamp(char *buffer) {
 
 void add_xml_data(xmlDocPtr doc, char *buffer) {
 	int i, j, pid;
+
 	xmlNodePtr root_node = NULL, products = NULL, node = NULL;
 
 	root_node = xmlNewNode(NULL, BAD_CAST "basket");
