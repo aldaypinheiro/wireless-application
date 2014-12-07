@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
 	add_xml_data(doc, buffer);
 
 	xmlSaveFormatFileEnc("-", doc, "UTF-8", 1);
-
+	xmlSaveFormatFileEnc("product.xml", doc, "UTF-8", 1);
 	pdu = encode_xml(doc, pc); //it is not altering memory value
 	
 	decode_xml(doc, pc, pdu);

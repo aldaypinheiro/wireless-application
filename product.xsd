@@ -8,15 +8,6 @@
 		</xs:sequence>
 	</xs:complexType>
 
-	<xs:complexType name="departmentType">
-		<xs:choice>
-			<xs:element name="Eletronics" />
-			<xs:element name="Forniture" />
-			<xs:element name="DIY" />
-			<xs:element name="Kitchen" />
-		</xs:choice>
-	</xs:complexType>
-
 	<xs:complexType name="productType">
 		<xs:sequence>
 			<xs:element name="id">
@@ -35,7 +26,16 @@
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
-			<xs:element name="department" type="departmentType" />
+			<xs:element name="department">
+				<xs:simpleType>
+					<xs:restriction base="enumerated">
+						<xs:enumeration value="Eletronics" />
+						<xs:enumeration value="Forniture" />
+						<xs:enumeration value="DIY" />
+						<xs:enumeration value="Kitchen" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
 			<xs:element name="price" type="currency" />
 			<xs:element name="weight" type="decimal" />
 			<xs:element name="fragile" type="boolean" />
@@ -45,7 +45,7 @@
 	<xs:element name="basket">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="purchase-timestamp" type="unix-time" />
+				<xs:element name="purchase-timestamp" type="string" />
 				<xs:element name="products" type="productsType" />
 			</xs:sequence>
 		</xs:complexType>
