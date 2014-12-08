@@ -18,7 +18,7 @@ char *get_timestamp(char *buffer) {
 }
 
 void add_xml_data(xmlDocPtr doc, char *buffer) {
-	int i, j, pid;
+	int i, j;//, pid;
 
 	xmlNodePtr root_node = NULL, products = NULL, node = NULL;
 
@@ -34,12 +34,12 @@ void add_xml_data(xmlDocPtr doc, char *buffer) {
 
 	for(i = 1; i <= j; i++) {
 		node = xmlNewChild(products, NULL, BAD_CAST "product", NULL);
+		
+		//user_input(buffer, "product id");
+		// pid = parse_int(buffer);
+		// buffer = parse_char(buffer, pid);
 
-		user_input(buffer, "product id");
-		pid = parse_int(buffer);
-		buffer = parse_char(buffer, pid);
-
-		xmlNewChild(node, NULL, BAD_CAST "id", BAD_CAST buffer);
+		xmlNewChild(node, NULL, BAD_CAST "id", BAD_CAST i);
 	
 		xmlNewChild(node, NULL, BAD_CAST "name", BAD_CAST user_input(buffer, "product name"));
 		

@@ -42,8 +42,6 @@ void decode_xml(xmlDocPtr doc, packedobjectsContext *pc, char *pdu) {
 
 	// output the DOM for checking
 	packedobjects_dump_doc(doc);
-
-	xmlFreeDoc(doc);
 }
 
 packedobjectsContext *initialize_po() {
