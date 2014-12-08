@@ -14,7 +14,7 @@ char *encode_xml(xmlDocPtr doc, packedobjectsContext *pc) {
 	}
 
 	// free the DOM
-	xmlFreeDoc(doc);
+	//xmlFreeDoc(doc);
 
 	return encode;
 }

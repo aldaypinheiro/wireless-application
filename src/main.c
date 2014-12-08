@@ -42,7 +42,7 @@ int main(int argc, char **argv) {
 	servaddr.sin_port        = htons(HOST_PORT); 
 
 	//initializing packedobjects
-	*pc = initialize_po();
+	pc = initialize_po();
 
 	// create the data
 	doc = xmlNewDoc(BAD_CAST "1.0");

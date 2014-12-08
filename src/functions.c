@@ -34,12 +34,12 @@ void add_xml_data(xmlDocPtr doc, char *buffer) {
 
 	for(i = 1; i <= j; i++) {
 		node = xmlNewChild(products, NULL, BAD_CAST "product", NULL);
-		
-		//user_input(buffer, "product id");
-		// pid = parse_int(buffer);
-		// buffer = parse_char(buffer, pid);
 
-		xmlNewChild(node, NULL, BAD_CAST "id", BAD_CAST i);
+		//user_input(buffer, "product id");
+		//pid = parse_int(buffer);
+		buffer = parse_char(buffer, i);
+
+		xmlNewChild(node, NULL, BAD_CAST "id", BAD_CAST buffer);
 	
 		xmlNewChild(node, NULL, BAD_CAST "name", BAD_CAST user_input(buffer, "product name"));
 		
