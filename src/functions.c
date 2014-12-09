@@ -18,6 +18,16 @@ void to_lower_case(char *buffer) {
 
 }
 
+void to_upper_case(char *buffer) {
+	int i = 0;
+
+	while(buffer[i]) {
+		buffer[i] = topper(buffer[i]);
+		i++;
+	}
+
+}
+
 struct tm *get_time() {
 	time_t now = time (NULL);
 	return localtime(&now);

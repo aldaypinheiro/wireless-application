@@ -1,4 +1,6 @@
-char *toLowerCase(char *buffer);
+void to_lower_case(char *buffer);
+
+void to_upper_case(char *buffer);
 
 struct tm *get_time();
 
