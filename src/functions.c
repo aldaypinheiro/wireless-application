@@ -18,7 +18,7 @@ char *get_timestamp(char *buffer) {
 }
 
 void add_xml_data(xmlDocPtr doc, char *buffer) {
-	int i, j;//, pid;
+	int i, j;
 
 	xmlNodePtr root_node = NULL, products = NULL, node = NULL;
 
@@ -35,19 +35,20 @@ void add_xml_data(xmlDocPtr doc, char *buffer) {
 	for(i = 1; i <= j; i++) {
 		node = xmlNewChild(products, NULL, BAD_CAST "product", NULL);
 
-		//user_input(buffer, "product id");
-		//pid = parse_int(buffer);
-		buffer = parse_char(buffer, i);
-
+		parse_char(buffer, i);
 		xmlNewChild(node, NULL, BAD_CAST "id", BAD_CAST buffer);
 	
 		xmlNewChild(node, NULL, BAD_CAST "name", BAD_CAST user_input(buffer, "product name"));
 		
 		xmlNewChild(node, NULL, BAD_CAST "department", BAD_CAST user_input(buffer, "product department"));
 	
-		xmlNewChild(node, NULL, BAD_CAST "price", BAD_CAST user_input(buffer, "product price"));
+		user_input(buffer, "product price");
+		parse_currency(buffer);
+		xmlNewChild(node, NULL, BAD_CAST "price", BAD_CAST buffer);
 		
-		xmlNewChild(node, NULL, BAD_CAST "weight", BAD_CAST user_input(buffer, "product weight"));
+		user_input(buffer, "product weight");
+		parse_decimal(buffer);
+		xmlNewChild(node, NULL, BAD_CAST "weight", BAD_CAST buffer);
 		
 		xmlNewChild(node, NULL, BAD_CAST "fragile", BAD_CAST user_input(buffer, "fragile type (true or false)"));
 	}
