@@ -2,6 +2,11 @@
 #include <errno.h>
 #include <string.h>
 #include <stdlib.h>
+#include <packedobjects/packedobjects.h>
+
+#include "functions.h"
+
+#define MAX_CHARACTER 256
 
 int parse_int(char *buffer) {
 	int r = 0;
@@ -84,6 +89,25 @@ void parse_decimal(char *buffer) {
 }
 
 void parse_boolean(char *buffer) {
+	//char t[MAX_CHARACTER] = "true", f[MAX_CHARACTER] = "false";
+
+
+	if (strcmp(buffer, "TRUE") == 0 || strcmp(buffer, "FALSE") == 0) {
+		printf("Warning: converted partially: %s, transforming in lower case\n", buffer);
+		toLowerCase(buffer);
+	} else if (strcmp(buffer, "1") == 0) {
+	 	printf("Warning: converting: %s in true\n", buffer);
+	 	strcpy(buffer, "true");
+	 } else if (strcmp(buffer, "0") == 0) {
+	 	printf("Warning: converting: %s in false\n", buffer);
+	 	strcpy(buffer, "false");
+	} else if (strcmp(buffer, "true") == 0 || strcmp(buffer, "false") == 0) {
+		
+	} else {
+		printf("Conversion error, couldn't convert: %s\n", buffer);
+
+		exit(EXIT_FAILURE);
+	}
 
 }
 

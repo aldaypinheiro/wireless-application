@@ -1,4 +1,5 @@
 #include <time.h>
+#include <ctype.h>
 #include <string.h>
 #include <packedobjects/packedobjects.h>
 
@@ -6,6 +7,16 @@
 #include "parses.h"
 
 #define MAX_CHARACTER 256
+
+void toLowerCase(char *buffer) {
+	int i = 0;
+
+	while(buffer[i]) {
+		buffer[i] = tolower(buffer[i]);
+		i++;
+	}
+
+}
 
 struct tm *get_time() {
 	time_t now = time (NULL);
@@ -50,6 +61,8 @@ void add_xml_data(xmlDocPtr doc, char *buffer) {
 		parse_decimal(buffer);
 		xmlNewChild(node, NULL, BAD_CAST "weight", BAD_CAST buffer);
 		
-		xmlNewChild(node, NULL, BAD_CAST "fragile", BAD_CAST user_input(buffer, "fragile type (true or false)"));
+		user_input(buffer, "fragile type (true or false)");
+		parse_boolean(buffer);
+		xmlNewChild(node, NULL, BAD_CAST "fragile", BAD_CAST buffer);
 	}
 }

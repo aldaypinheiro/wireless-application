@@ -1,3 +1,5 @@
+char *toLowerCase(char *buffer);
+
 struct tm *get_time();
 
 char *get_timestamp(char *buffer);
