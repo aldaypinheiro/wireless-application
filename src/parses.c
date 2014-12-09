@@ -89,9 +89,6 @@ void parse_decimal(char *buffer) {
 }
 
 void parse_boolean(char *buffer) {
-	//char t[MAX_CHARACTER] = "true", f[MAX_CHARACTER] = "false";
-
-
 	if (strcmp(buffer, "TRUE") == 0 || strcmp(buffer, "FALSE") == 0) {
 		printf("Warning: converted partially: %s, transforming in lower case\n", buffer);
 		toLowerCase(buffer);
@@ -102,13 +99,11 @@ void parse_boolean(char *buffer) {
 	 	printf("Warning: converting: %s in false\n", buffer);
 	 	strcpy(buffer, "false");
 	} else if (strcmp(buffer, "true") == 0 || strcmp(buffer, "false") == 0) {
-		
+		//nothing to be done due to value inserted be in correct form
 	} else {
 		printf("Conversion error, couldn't convert: %s\n", buffer);
-
 		exit(EXIT_FAILURE);
 	}
-
 }
 
 void parse_departament(char *buffer) {

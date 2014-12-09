@@ -8,7 +8,7 @@
 
 #define MAX_CHARACTER 256
 
-void toLowerCase(char *buffer) {
+void to_lower_case(char *buffer) {
 	int i = 0;
 
 	while(buffer[i]) {
