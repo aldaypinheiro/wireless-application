@@ -8,4 +8,4 @@ void parse_decimal(char *buffer);
 
 void parse_boolean(char *buffer);
 
-void parse_departament(char *buffer);
+void parse_department(char *buffer);

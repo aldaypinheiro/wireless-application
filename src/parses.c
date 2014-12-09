@@ -91,7 +91,7 @@ void parse_decimal(char *buffer) {
 void parse_boolean(char *buffer) {
 	if (strcmp(buffer, "TRUE") == 0 || strcmp(buffer, "FALSE") == 0) {
 		printf("Warning: converted partially: %s, transforming in lower case\n", buffer);
-		toLowerCase(buffer);
+		to_lower_case(buffer);
 	} else if (strcmp(buffer, "1") == 0) {
 	 	printf("Warning: converting: %s in true\n", buffer);
 	 	strcpy(buffer, "true");
@@ -106,6 +106,6 @@ void parse_boolean(char *buffer) {
 	}
 }
 
-void parse_departament(char *buffer) {
-
+void parse_department(char *buffer) {
+	to_upper_case(buffer);
 }

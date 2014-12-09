@@ -10,22 +10,18 @@
 
 void to_lower_case(char *buffer) {
 	int i = 0;
-
 	while(buffer[i]) {
 		buffer[i] = tolower(buffer[i]);
 		i++;
 	}
-
 }
 
 void to_upper_case(char *buffer) {
 	int i = 0;
-
 	while(buffer[i]) {
 		buffer[i] = topper(buffer[i]);
 		i++;
 	}
-
 }
 
 struct tm *get_time() {
@@ -61,7 +57,9 @@ void add_xml_data(xmlDocPtr doc, char *buffer) {
 	
 		xmlNewChild(node, NULL, BAD_CAST "name", BAD_CAST user_input(buffer, "product name"));
 		
-		xmlNewChild(node, NULL, BAD_CAST "department", BAD_CAST user_input(buffer, "product department"));
+		user_input(buffer, "product department")
+		parse_department(buffer);
+		xmlNewChild(node, NULL, BAD_CAST "department", BAD_CAST buffer);
 	
 		user_input(buffer, "product price");
 		parse_currency(buffer);
