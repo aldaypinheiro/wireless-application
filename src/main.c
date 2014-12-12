@@ -68,6 +68,9 @@ int main(int argc, char **argv) {
 	// send the pdu across the network
 	bytes_sent = send(sock, pdu, pc->bytes, 0);
 
+	// xml size                                                                                                      
+  	printf("Size of XML after encoding %d bytes.\n", pc->bytes);
+
 	if (bytes_sent != pc->bytes) {
 		fprintf(stderr, "Error calling send()\n");
 		exit(EXIT_FAILURE);

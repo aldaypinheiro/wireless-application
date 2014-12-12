@@ -52,7 +52,7 @@ void add_xml_data(xmlDocPtr doc, char *buffer) {
 	for(i = 1; i <= j; i++) {
 		node = xmlNewChild(products, NULL, BAD_CAST "product", NULL);
 
-		parse_char(buffer, i);
+		parse_int2char(buffer, i);
 		xmlNewChild(node, NULL, BAD_CAST "id", BAD_CAST buffer);
 	
 		xmlNewChild(node, NULL, BAD_CAST "name", BAD_CAST user_input(buffer, "product name"));

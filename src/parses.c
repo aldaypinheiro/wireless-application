@@ -25,8 +25,34 @@ int parse_int(char *buffer) {
 	return r;
 }
 
-void parse_char(char *buffer, int value) {
+double parse_double(char *buffer) {
+	double r = 0;
+	char *end = NULL;
+	errno = 0;
+
+	r = strtod(buffer, &end);
+
+	if (errno != 0) {
+		fprintf(stderr, "Conversion error, %s\n", strerror(errno));
+		exit (EXIT_FAILURE); 
+	} else if (*end) {
+		printf("Warning: converted partially: %f, non-convertible part: %s\n", r, end);
+	}
+
+	return r;
+}
+
+void parse_int2char(char *buffer, int value) {
 	sprintf(buffer, "%d", value);
+
+	if (errno != 0) {
+		fprintf(stderr, "Conversion error, %s\n", strerror(errno));
+		exit (EXIT_FAILURE); 
+	}
+}
+
+void parse_double2char(char *buffer, double value) {
+	sprintf(buffer, "%f", value);
 
 	if (errno != 0) {
 		fprintf(stderr, "Conversion error, %s\n", strerror(errno));
@@ -39,9 +65,18 @@ void parse_currency(char *buffer) {
 		int i = 0;
 		i = parse_int(buffer);
 
+		parse_int2char(buffer, i);
+
 		printf("Warning: converted partially: %s, adding .00 at the end of the currency\n", buffer);
 		strcat(buffer, ".00");
-	} else {
+	}
+
+	double i = 0.0;
+	i = parse_double(buffer);
+
+	parse_double2char(buffer, i);
+
+	if (strchr(buffer, '.') != NULL) {
 		int len = strlen(strchr(buffer, '.'));
 		
 		if (len == 1) {
@@ -70,7 +105,14 @@ void parse_decimal(char *buffer) {
 
 		printf("Warning: converted partially: %s, adding .0 at the end of the currency\n", buffer);
 		strcat(buffer, ".0");
-	} else {
+	} 
+
+	double i = 0.0;
+	i = parse_double(buffer);
+
+	parse_double2char(buffer, i);
+
+	if (strchr(buffer, '.') != NULL) {
 		int len = strlen(strchr(buffer, '.'));
 		
 		if (len == 1) {
